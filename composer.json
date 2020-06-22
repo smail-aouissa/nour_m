@@ -9,10 +9,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "coderello/laravel-nova-lang": "^1.4",
+        "ebess/advanced-nova-media-library": "^3.2",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
+        "laravel/nova": "*",
         "laravel/tinker": "^2.0",
         "spatie/laravel-medialibrary": "^8.3.0"
     },
@@ -24,6 +27,12 @@
         "nunomaduro/collision": "^4.1",
         "phpunit/phpunit": "^8.5"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./nova"
+        }
+    ],
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",

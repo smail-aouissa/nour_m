@@ -4,27 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasMediaTrait, SoftDeletes;
+    use InteractsWithMedia, SoftDeletes;
 
     protected $guarded = [];
 
-    public function registerMediaConversions(Media $media = null)
+    public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('small')
+        $this->addMediaConversion('thumb')
             ->nonOptimized()
             ->width(84)
             ->height(84);
-
-        $this->addMediaConversion('medium')
-            ->nonOptimized()
-            ->width(360)
-            ->height(360)
-            ->optimize();
 
         $this->addMediaConversion('full')
             ->optimize()
@@ -32,13 +27,13 @@ class Product extends Model
             ->height(720);
     }
 
-    public function registerMediaCollections()
+    public function registerMediaCollections(): void
     {
         $this->addMediaCollection('product_images')
             ->useDisk('products');
     }
 
-    public function categories(){
+    public function category(){
         return $this->belongsTo(Category::class);
     }
 
