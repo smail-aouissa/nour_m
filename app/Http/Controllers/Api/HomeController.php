@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Collection;
 use App\Models\Product;
 use App\Models\Slider;
 use App\Models\TopPanel;
@@ -15,8 +16,12 @@ class HomeController extends Controller
     public function __invoke()
     {
         return response()->json([
-            'topPanelItems' => TopPanel::select('text','link')->get(),
-            'categories' => Category::select('label','id')->with('children')->get(),
+            'topPanelItems' => TopPanel::select('text','link')
+                ->get(),
+            'categories' => Category::select('label','id')
+                ->onlyParent()
+                ->with('children')
+                ->get(),
         ], 200);
     }
 
@@ -30,10 +35,32 @@ class HomeController extends Controller
                 ->with(['children'])
                 ->limit(3)
                 ->get()
-                ->forget('media')
-                ->map(function ($category){
-                    return $category->append('photo');
-                }),
+                ->map
+                ->append('photo'),
+
+            'latestProducts' => Product::whereStatus(true)
+                ->with('category:label,id','colors','attribute')
+                ->limit(8)
+                ->withRating()
+                ->get(['products.promo_price AS offerPrice', 'products.*'])
+                ->each
+                ->setAppends(['photos']),
+
+            'bestSellersProducts' => Product::whereStatus(true)
+                ->with('category:label,id','colors','attribute')
+                ->limit(4)
+                ->withRating()
+                ->orderBy('rating','desc')
+                ->get(['products.promo_price AS offerPrice', 'products.*'])
+                ->each
+                ->setAppends(['photos']),
+
+            'collections' => Collection::select('label','id')
+                ->limit(4)
+                ->get()
+                ->each
+                ->setAppends(['photo']),
+
         ], 200);
     }
 }

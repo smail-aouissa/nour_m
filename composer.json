@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "64robots/nova-fields": "^0.17.0",
         "coderello/laravel-nova-lang": "^1.4",
         "ebess/advanced-nova-media-library": "^3.2",
         "fideloper/proxy": "^4.2",
@@ -17,7 +18,9 @@
         "laravel/framework": "^7.0",
         "laravel/nova": "*",
         "laravel/tinker": "^2.0",
-        "spatie/laravel-medialibrary": "^8.3.0"
+        "reinink/advanced-eloquent": "^0.2.0",
+        "spatie/laravel-medialibrary": "^8.3.0",
+        "timothyasp/nova-color-field": "^1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.4",

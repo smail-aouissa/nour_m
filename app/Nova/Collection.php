@@ -5,21 +5,20 @@ namespace App\Nova;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Product extends Resource
+class Collection extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Product::class;
+    public static $model = \App\Models\Collection::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -48,40 +47,18 @@ class Product extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Catégorie','category',Category::class),
 
             Text::make('Label')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Prix','price')
-                ->default(function () { return 1.00; })
-                ->sortable()
-                ->rules('required', 'numeric','min:0'),
-
-            Text::make('Prix promo','promo_price')
-                ->default(function () { return 0.00; })
-                ->nullable()
-                ->hideFromIndex()
-                ->rules('nullable', 'numeric','min:0'),
-
-            Textarea::make('Déscription','description')
-                ->sortable()
-                ->rules('required', 'string'),
-
-            Boolean::make('Statut','status')->default(function (){
-                return true;
-            }),
-
-            Images::make('Images','product_images')
+            Images::make('Images','collection_images')
                 ->conversionOnIndexView('thumb')
                 ->conversionOnDetailView('full')
                 ->conversionOnForm('full')
-                ->hideFromIndex(),
+                ->required(),
 
-            HasMany::make('Couleurs','colors',Color::class),
-
-            HasOne::make('Attribues','attribute',Attribute::class)
+            BelongsToMany::make('Produits', 'products', Product::class)
         ];
     }
 

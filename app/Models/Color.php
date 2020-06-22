@@ -28,7 +28,11 @@ class Color extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images')
+        $this->addMediaCollection('color_images')
             ->singleFile();
+    }
+
+    public function product(){
+        return $this->belongsTo(Product::class);
     }
 }

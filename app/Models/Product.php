@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,6 +15,10 @@ class Product extends Model implements HasMedia
     use InteractsWithMedia, SoftDeletes;
 
     protected $guarded = [];
+
+    protected $casts = [
+        'rating' => 'integer'
+    ];
 
     public function registerMediaConversions(Media $media = null): void
     {
@@ -29,23 +35,44 @@ class Product extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('images')
-            ->useDisk('products');
+        $this->addMediaCollection('product_images');
+    }
+
+    public function scopeWithRating(Builder $query)
+    {
+        $sub = Rating::query()
+            ->selectRaw('AVG(ratings.rate)')
+            ->where('ratings.product_id', \DB::raw('products.id'));
+
+        $query->addSubSelect('rating', $sub);
     }
 
     public function category(){
         return $this->belongsTo(Category::class);
     }
 
-    public function color(){
+    public function colors(){
         return $this->hasMany(Color::class);
     }
 
-    public function attributes(){
-        return $this->hasMany(Attribute::class);
+    public function attribute(){
+        return $this->hasOne(Attribute::class)->with('variations');
     }
 
     public function ratings(){
         return $this->hasMany(Rating::class);
     }
+
+    public function getPhotosAttribute(){
+        $photos = $this->hasMedia('product_images') ?
+            $this->getMedia('product_images')->map(function ($item){
+                return [
+                    'thumb' => $item->getFullUrl('thumb'),
+                    'full' => $item->getFullUrl('full'),
+                ];
+            }) : [];
+        $this->unsetRelation('media');
+        return $photos;
+    }
+
 }
