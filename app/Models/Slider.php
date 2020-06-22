@@ -13,7 +13,7 @@ class Slider extends Model implements HasMedia
 
     protected $guarded = [];
 
-    //protected $appends = ['photo'];
+    protected $appends = ['photo'];
 
     public function registerMediaConversions(Media $media = null): void
     {
@@ -31,13 +31,12 @@ class Slider extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('slider_images')
-            ->useDisk('sliders')
+        $this->addMediaCollection('images')
             ->singleFile();
     }
 
 
     public function getPhotoAttribute(){
-        return $this->getFirstMediaUrl('image');
+        return $this->getFirstMediaUrl('images');
     }
 }

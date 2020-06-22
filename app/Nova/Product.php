@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 
 class Product extends Resource
 {
@@ -53,9 +54,15 @@ class Product extends Resource
 
             Text::make('Prix','price')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'numeric','min:0'),
 
-            Boolean::make('Statut','status'),
+            Textarea::make('Déscription','description')
+                ->sortable()
+                ->rules('required', 'string'),
+
+            Boolean::make('Statut','status')->default(function (){
+                return true;
+            }),
 
             Images::make('Images')
                 ->conversionOnIndexView('thumb')

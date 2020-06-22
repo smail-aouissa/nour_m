@@ -8,16 +8,17 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Category extends Resource
+class TopPanel extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Category::class;
+    public static $model = \App\Models\TopPanel::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -32,16 +33,8 @@ class Category extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'label',
+        'id', 'text',
     ];
-
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        if($request->viaRelationship())
-            return $query;
-
-        return $query->whereNull('category_id');
-    }
 
     /**
      * Get the fields displayed by the resource.
@@ -54,20 +47,13 @@ class Category extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Catégorie parent','parent',Category::class)
-                ->nullable(),
-
-            Text::make('Label')
+            Textarea::make('Text')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Images::make('Images')
-                ->conversionOnIndexView('thumb')
-                ->conversionOnDetailView('full')
-                ->conversionOnForm('full')
-                ->required(),
-
-            HasMany::make('Catégories', 'children', Category::class)
+            Text::make('Lien','link')
+                ->sortable()
+                ->rules('required', 'max:255'),
         ];
     }
 

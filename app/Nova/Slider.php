@@ -5,19 +5,21 @@ namespace App\Nova;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Category extends Resource
+class Slider extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Category::class;
+    public static $model = \App\Models\Slider::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -32,16 +34,8 @@ class Category extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'label',
+        'id', 'title',
     ];
-
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        if($request->viaRelationship())
-            return $query;
-
-        return $query->whereNull('category_id');
-    }
 
     /**
      * Get the fields displayed by the resource.
@@ -54,20 +48,31 @@ class Category extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Catégorie parent','parent',Category::class)
-                ->nullable(),
+            Text::make('Titre de Slider','title')
+                ->sortable()
+                ->rules('required', 'max:50','min:4'),
 
-            Text::make('Label')
+            Textarea::make('Contenu','content')
+                ->rules('required','string'),
+
+            Text::make('Lien','link')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Images::make('Images')
+            Images::make('Image', 'slider_images')
+                ->setFileName(function ($media){
+                    return 'slider_'. $this->id .'.jpg';
+                })
                 ->conversionOnIndexView('thumb')
                 ->conversionOnDetailView('full')
-                ->conversionOnForm('full')
-                ->required(),
+                ->conversionOnForm('thumb')
+                ->rules('required'),
 
-            HasMany::make('Catégories', 'children', Category::class)
+            Boolean::make('Statut','status')
+                ->sortable()
+                ->default(function (){
+                    return true;
+                }),
         ];
     }
 

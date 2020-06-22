@@ -11,6 +11,8 @@ class Category extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
+    protected $guarded = [];
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -26,11 +28,8 @@ class Category extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('category_images')
-            ->singleFile();;
+        $this->addMediaCollection('images')->singleFile();
     }
-
-    protected $guarded = [];
 
     public function products(){
         return $this->hasMany(Product::class);
@@ -41,6 +40,10 @@ class Category extends Model implements HasMedia
     }
 
     public function parent(){
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class,'category_id');
+    }
+
+    public function getPhotoAttribute(){
+        return $this->getFirstMediaUrl('images');
     }
 }
