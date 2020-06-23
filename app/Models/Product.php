@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
@@ -55,8 +54,8 @@ class Product extends Model implements HasMedia
         return $this->hasMany(Color::class);
     }
 
-    public function attribute(){
-        return $this->hasOne(Attribute::class)->with('variations');
+    public function sizes(){
+        return $this->hasMany(Size::class);
     }
 
     public function ratings(){

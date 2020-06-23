@@ -19,6 +19,7 @@ class CreateOrderProductTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->json('attributes')->nullable();
             $table->unsignedSmallInteger('quantity');
+            $table->unsignedInteger('price');
             $table->timestamps();
 
             $table->foreign('order_id')

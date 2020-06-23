@@ -17,7 +17,7 @@ class CreateColorsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->string('label')->nullable();
-            $table->string('code');
+            $table->string('code')->index();
             $table->unsignedSmallInteger('quantity')->default(0);
             $table->timestamps();
 

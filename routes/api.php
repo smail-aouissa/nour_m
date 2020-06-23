@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'HomeController');
 Route::get('/home', 'HomeController@index');
+
+
+Route::get('/categories', 'CategoryController');
+//Route::get('/category', 'CategoryController@index');
+Route::post('/category/{id}', 'CategoryController@show');

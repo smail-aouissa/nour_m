@@ -39,7 +39,7 @@ class HomeController extends Controller
                 ->append('photo'),
 
             'latestProducts' => Product::whereStatus(true)
-                ->with('category:label,id','colors','attribute')
+                ->with('category:label,id','colors','sizes')
                 ->limit(8)
                 ->withRating()
                 ->get(['products.promo_price AS offerPrice', 'products.*'])
@@ -47,7 +47,7 @@ class HomeController extends Controller
                 ->setAppends(['photos']),
 
             'bestSellersProducts' => Product::whereStatus(true)
-                ->with('category:label,id','colors','attribute')
+                ->with('category:label,id','colors','sizes')
                 ->limit(4)
                 ->withRating()
                 ->orderBy('rating','desc')

@@ -81,7 +81,7 @@ class Product extends Resource
 
             HasMany::make('Couleurs','colors',Color::class),
 
-            HasOne::make('Attribues','attribute',Attribute::class)
+            HasMany::make('Tailles','sizes',Size::class),
         ];
     }
 

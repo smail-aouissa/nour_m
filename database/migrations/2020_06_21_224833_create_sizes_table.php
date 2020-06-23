@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVariationsTable extends Migration
+class CreateSizesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateVariationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('variations', function (Blueprint $table) {
+        Schema::create('sizes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('attribute_id');
-            $table->string('label');
-            $table->unsignedSmallInteger('quantity')->nullable();
+            $table->unsignedBigInteger('product_id');
+            $table->string('label')->nullable();
+            $table->unsignedSmallInteger('quantity')->default(0);
             $table->timestamps();
 
-            $table->foreign('attribute_id')
+            $table->foreign('product_id')
                 ->references('id')
-                ->on('attributes')
-                ->cascadeOnDelete();
+                ->on('products')
+                ->onDelete('cascade');
         });
     }
 
@@ -34,6 +34,6 @@ class CreateVariationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('variations');
+        Schema::dropIfExists('sizes');
     }
 }

@@ -2,22 +2,22 @@
 
 namespace App\Nova;
 
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use R64\NovaFields\Row;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Attribute extends Resource
+class Size extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Attribute::class;
+    public static $model = \App\Models\Size::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -40,6 +40,16 @@ class Attribute extends Resource
         return false;
     }
 
+    public static function redirectAfterCreate(NovaRequest $request, $resource)
+    {
+        return '/resources/products/'. $resource->product->id;
+    }
+
+    public function authorizedToView(Request $request)
+    {
+        return false;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -58,20 +68,9 @@ class Attribute extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Row::make('Variation', [
-                \R64\NovaFields\Text::make('Label','label')
-                    ->fieldClasses('w-full px-6 py-2')
-                    ->rules('required', 'max:20')
-                    ->hideLabelInForms(),
-                \R64\NovaFields\Number::make('Quantité','quantity')
-                    ->fieldClasses('w-full px-6 py-2')
-                    ->rules('required', 'min:0')
-                    ->hideLabelInForms(),
-            ])->fieldClasses('w-full p-4')
-                ->addRowText('Ajouter')
-                ->hideFromIndex(),
-
-            //HasMany::make('Vatitations','variations',Variation::class)
+            Text::make('Quantité','quantity')
+                ->sortable()
+                ->rules('required', 'max:20'),
         ];
     }
 
