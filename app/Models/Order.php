@@ -6,5 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    //
+    protected $guarded = [];
+
+    public function products(){
+        return $this->belongsToMany(Product::class)
+            ->withPivot('quantity','price','attributes','product_id')
+            ->withTimestamps();
+    }
+
+    public function province(){
+        return $this->belongsTo(Province::class);
+    }
+
+    public function town(){
+        return $this->belongsTo(Town::class);
+    }
 }

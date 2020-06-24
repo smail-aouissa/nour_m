@@ -32,6 +32,7 @@ class HomeController extends Controller
                 ->get(),
 
             'categories' => Category::select('label','id')
+                ->onlyParent()
                 ->with(['children'])
                 ->limit(3)
                 ->get()

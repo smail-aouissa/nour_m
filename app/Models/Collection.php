@@ -13,11 +13,6 @@ class Collection extends Model implements HasMedia
 
     protected $guarded = [];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime'
-    ];
-
     protected static function boot()
     {
         parent::boot();

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -71,6 +72,10 @@ class Color extends Resource
             \Timothyasp\Color\Color::make('Les couleurs de produit ','code')
                 ->compact()
                 ->rules('required'),
+
+            Number::make('Quantité','quantity')
+                ->required()
+                ->rules('required','numeric','min:0'),
 
             Images::make('Image','color_images')
                 ->conversionOnIndexView('thumb')

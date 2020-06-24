@@ -5,37 +5,33 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 
 use App\Models\Category;
+use App\Models\Collection;
 use App\Models\Color;
 use App\Models\Size;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class CollectionController extends Controller
 {
     public function __invoke(){
+        // TODO colors of collection
         return response()->json([
-            'sections' => Category::all(['id','label']),
+            'sections' => Collection::all(['id','label']),
             'colors' => Color::groupBy(['code'])->get(['id','code','label']),
             'sizes' => Size::groupBy(['label'])->get(['id','label']),
         ],200);
     }
 
-    public function index(Request $request){
-        return response()->json([
-
-        ],200);
-    }
-
     public function show(Request $request, $id){
         $filters = $request->all();
-        $category = Category::query()->findOrFail($id);
+        $collection = Collection::query()->findOrFail($id);
 
         $price = array_key_exists('price',$filters) && count($filters['price']) > 0;
-        $colors = array_key_exists('colors',$filters) && count($filters['colors']) > 0;
-        $sizes = array_key_exists('sizes',$filters) && count($filters['sizes']) > 0;
+        $sizes = array_key_exists('sizes',$filters) && count($filters['sizes']);
+        $colors = array_key_exists('colors',$filters) && count($filters['colors']);
 
         return response()->json([
-            'products' => $category->products()
+            'products' => $collection->products()
                 ->when( $price , function (Builder $q) use($filters) {
                     $q->where([
                         ['price', '>=' , $filters['price']['min']],

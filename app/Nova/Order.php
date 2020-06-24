@@ -2,30 +2,32 @@
 
 namespace App\Nova;
 
-use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
-use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Collection extends Resource
+class Order extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Collection::class;
+    public static $model = \App\Models\Order::class;
+
+    public static $group = "Commandes";
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'label';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -33,8 +35,29 @@ class Collection extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'label',
+        'id', 'name','phone',
     ];
+
+
+    public function authorizedToAdd(NovaRequest $request, $model)
+    {
+        return false;
+    }
+
+    public function authorizedToUpdate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToAttachAny(NovaRequest $request, $model)
+    {
+        return false;
+    }
+
+    public static function label()
+    {
+        return 'Non Validées';
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -47,20 +70,33 @@ class Collection extends Resource
         return [
             ID::make()->sortable(),
 
+            DateTime::make('Validée le','validated_at')
+                ->format('DD-MMM-YYYY HH:mm')
+                ->onlyOnDetail(),
 
-            Text::make('Label')
-                ->sortable()
-                ->rules('required', 'max:255'),
+            Text::make('Nom du client','name')
+                ->sortable(),
 
-            Images::make('Images','collection_images')
-                ->conversionOnIndexView('thumb')
-                ->conversionOnDetailView('full')
-                ->conversionOnForm('full')
-                ->showDimensions()
-                //->singleImageRules('dimensions:max_width=100')
-                ->required(),
+            Text::make('N° Téléphone','phone'),
 
-            BelongsToMany::make('Produits', 'products', Product::class)
+            Text::make('Email','email')
+                ->onlyOnDetail(),
+
+            Text::make('Adresse','address')
+                ->onlyOnDetail(),
+
+            BelongsTo::make('Wilaya','province',Province::class),
+
+            BelongsTo::make('Ville','town',Town::class)
+                ->onlyOnDetail(),
+
+            Text::make('Nbr du produits',function (){
+                return $this->products->count();
+            }),
+
+            DateTime::make('Crée le','created_at')->format('DD-MMM-YYYY HH:mm'),
+
+            BelongsToMany::make('Produits','products',Product::class)
         ];
     }
 

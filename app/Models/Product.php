@@ -16,8 +16,10 @@ class Product extends Model implements HasMedia
     protected $guarded = [];
 
     protected $casts = [
-        'rating' => 'integer'
+        'rating' => 'integer',
     ];
+
+    protected $appends = ['photos'];
 
     public function registerMediaConversions(Media $media = null): void
     {
@@ -44,6 +46,11 @@ class Product extends Model implements HasMedia
             ->where('ratings.product_id', \DB::raw('products.id'));
 
         $query->addSubSelect('rating', $sub);
+    }
+
+    public function orders(){
+        return $this->belongsToMany(Order::class)
+            ->withPivot('quantity','price','attributes','product_id');
     }
 
     public function category(){

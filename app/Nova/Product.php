@@ -5,12 +5,16 @@ namespace App\Nova;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\Trix;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Product extends Resource
 {
@@ -37,6 +41,11 @@ class Product extends Resource
         'id', 'label',
     ];
 
+    protected function authorizedToUpdateForSerialization(NovaRequest $request)
+    {
+        return false;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -48,7 +57,10 @@ class Product extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Catégorie','category',Category::class),
+            BelongsTo::make('Catégorie','category',Category::class)
+                ->hideFromIndex(function ($request){
+                    return $request->request->get('relationshipType');
+                }),
 
             Text::make('Label')
                 ->sortable()
@@ -57,6 +69,9 @@ class Product extends Resource
             Text::make('Prix','price')
                 ->default(function () { return 1.00; })
                 ->sortable()
+                ->hideFromIndex(function ($request){
+                    return $request->request->get('relationshipType');
+                })
                 ->rules('required', 'numeric','min:0'),
 
             Text::make('Prix promo','promo_price')
@@ -66,12 +81,17 @@ class Product extends Resource
                 ->rules('nullable', 'numeric','min:0'),
 
             Textarea::make('Déscription','description')
-                ->sortable()
+                ->onlyOnDetail()
                 ->rules('required', 'string'),
 
+            Trix::make('Déscription','description')
+                ->onlyOnForms(),
+
             Boolean::make('Statut','status')->default(function (){
-                return true;
-            }),
+                    return true;
+                })->hideFromIndex(function ($request){
+                    return $request->request->get('relationshipType');
+                }),
 
             Images::make('Images','product_images')
                 ->conversionOnIndexView('thumb')
@@ -82,6 +102,23 @@ class Product extends Resource
             HasMany::make('Couleurs','colors',Color::class),
 
             HasMany::make('Tailles','sizes',Size::class),
+
+            BelongsToMany::make('Commandes','orders',Order::class)
+                ->fields(function (){
+                    return [
+                        Text::make('Prix de vente','price'),
+                        Text::make('quantity','quantity'),
+                        Text::make('Attributes',function ($model){
+                            $attributes = json_decode($model->attributes,true) ?? [];
+                            $result = '';
+                            if(array_key_exists('color',$attributes))
+                                $result .= "<div class='flex items-center mt-1'>Couleur: <div class='mx-2' style='background-color: ".$attributes['color']."; border-radius: 30px;width: 15px;height: 15px'></div></div>";
+                            if(array_key_exists('size', $attributes))
+                                $result .= "<div>Taille: <span>".$attributes['size']."</span></div>";
+                            return count($attributes) > 0 ? $result : 'Non défini';
+                        })->asHtml(),
+                    ];
+                })->onlyOnIndex()
         ];
     }
 

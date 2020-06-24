@@ -13,6 +13,8 @@ class Color extends Model implements HasMedia
 
     protected $guarded = [];
 
+    protected $appends = ['photo'];
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -34,5 +36,14 @@ class Color extends Model implements HasMedia
 
     public function product(){
         return $this->belongsTo(Product::class);
+    }
+
+    public function getPhotoAttribute(){
+        if($this->hasMedia('color_images')){
+            $media = $this->getFirstMediaUrl('color_images');
+            $this->unsetRelation('media');
+            return $media;
+        }
+        return null;
     }
 }

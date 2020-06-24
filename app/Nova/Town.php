@@ -5,27 +5,27 @@ namespace App\Nova;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Collection extends Resource
+class Town extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Collection::class;
+    public static $model = \App\Models\Town::class;
 
+    public static $group = "Options";
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'label';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -33,8 +33,24 @@ class Collection extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'label',
+        'id', 'name',
     ];
+
+
+    public function authorizedToView(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+    public static function label()
+    {
+        return "Villes";
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -47,20 +63,16 @@ class Collection extends Resource
         return [
             ID::make()->sortable(),
 
+            BelongsTo::make('Wilaya','province',Province::class)
+                ->exceptOnForms()
+                ->withMeta(['extraAttributes' => [
+                    'readonly' => true
+                ]])
+                ->exceptOnForms(),
 
-            Text::make('Label')
+            Text::make('Nom','name')
                 ->sortable()
                 ->rules('required', 'max:255'),
-
-            Images::make('Images','collection_images')
-                ->conversionOnIndexView('thumb')
-                ->conversionOnDetailView('full')
-                ->conversionOnForm('full')
-                ->showDimensions()
-                //->singleImageRules('dimensions:max_width=100')
-                ->required(),
-
-            BelongsToMany::make('Produits', 'products', Product::class)
         ];
     }
 

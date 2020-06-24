@@ -19,5 +19,15 @@ Route::get('/home', 'HomeController@index');
 
 
 Route::get('/categories', 'CategoryController');
-//Route::get('/category', 'CategoryController@index');
 Route::post('/category/{id}', 'CategoryController@show');
+
+Route::get('/collections', 'CollectionController');
+Route::post('/collection/{id}', 'CollectionController@show');
+
+Route::get('/product/{id}', 'ProductController@show');
+
+
+Route::get('/provinces', 'ProvinceController');
+Route::get('/province/{id}', 'ProvinceController@show');
+
+Route::post('/order', 'OrderController@store');

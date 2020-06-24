@@ -20,7 +20,9 @@ class CreateOrdersTable extends Migration
             $table->string('name');
             $table->string('phone');
             $table->string('address');
-            $table->unsignedSmallInteger('wilaya');
+            $table->string('email')->nullable();
+            $table->unsignedBigInteger('province_id');
+            $table->unsignedBigInteger('town_id')->nullable();
             $table->softDeletes('deleted_at');
             $table->timestamps();
 
