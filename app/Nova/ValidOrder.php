@@ -2,17 +2,19 @@
 
 namespace App\Nova;
 
-use App\Nova\Actions\ValidateOrder;
+use App\Nova\Actions\ExportOrders;
+use App\Nova\Actions\InvalidateOrder;
 use Illuminate\Http\Request;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 
-class Order extends Resource
+class ValidOrder extends Resource
 {
     /**
      * The model the resource corresponds to.
@@ -62,13 +64,19 @@ class Order extends Resource
 
     public static function label()
     {
-        return 'Commandes';
+        return 'Commande validées';
     }
 
+    /**
+     * @param NovaRequest $request
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->whereNull('validated_at');
+        return $query->whereNotNull('validated_at');
     }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -152,7 +160,8 @@ class Order extends Resource
     public function actions(Request $request)
     {
         return [
-            new ValidateOrder,
+            new InvalidateOrder,
+            new ExportOrders
         ];
     }
 }
