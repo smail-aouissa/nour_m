@@ -84,7 +84,7 @@ class Product extends Resource
 
             Textarea::make('Déscription','description')
                 ->onlyOnDetail()
-                ->rules('required', 'string'),
+                ->rules('nullable', 'string'),
 
             Trix::make('Déscription','description')
                 ->onlyOnForms(),

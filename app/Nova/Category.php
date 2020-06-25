@@ -45,6 +45,11 @@ class Category extends Resource
         return $query->whereNull('category_id');
     }
 
+    public static function relatableQuery(NovaRequest $request, $query)
+    {
+        return $query->orWhereNotNull('category_id');
+    }
+
     public static function label()
     {
         return "Les catégories";
