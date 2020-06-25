@@ -21,6 +21,8 @@ class Slider extends Resource
      */
     public static $model = \App\Models\Slider::class;
 
+    public static $group = "Objets";
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -36,6 +38,11 @@ class Slider extends Resource
     public static $search = [
         'id', 'title',
     ];
+
+    public static function label()
+    {
+        return "Sliders";
+    }
 
     /**
      * Get the fields displayed by the resource.

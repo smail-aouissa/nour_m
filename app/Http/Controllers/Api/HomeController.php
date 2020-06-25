@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\Product;
 use App\Models\Slider;
+use App\Models\Testimonial;
 use App\Models\TopPanel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -61,6 +62,8 @@ class HomeController extends Controller
                 ->get()
                 ->each
                 ->setAppends(['photo']),
+
+            'testimonials' => Testimonial::all(),
 
         ], 200);
     }

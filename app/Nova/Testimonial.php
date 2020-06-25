@@ -7,25 +7,26 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Color extends Resource
+class Testimonial extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Color::class;
+    public static $model = \App\Models\Testimonial::class;
 
+    public static $group = "Objets";
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'label';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -33,27 +34,12 @@ class Color extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'label','code',
+        'id', 'name','position'
     ];
-
-    public static function availableForNavigation(Request $request)
-    {
-        return false;
-    }
-
-    public static function redirectAfterCreate(NovaRequest $request, $resource)
-    {
-        return '/resources/products/'. $resource->product->id;
-    }
-
-    public function authorizedToView(Request $request)
-    {
-        return false;
-    }
 
     public static function label()
     {
-        return "Couleurs";
+        return "Témoignages";
     }
 
     /**
@@ -67,25 +53,22 @@ class Color extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Produit','product',Product::class)
-                ->exceptOnForms(),
-
-            Text::make('Label')
+            Text::make('Nom','name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            \Timothyasp\Color\Color::make('Les couleurs de produit ','code')
-                ->compact()
-                ->rules('required'),
+            Text::make('Position','position')
+                ->sortable()
+                ->rules('nullable', 'max:255'),
 
-            Number::make('Quantité','quantity')
-                ->required()
-                ->rules('required','numeric','min:0'),
+            Textarea::make('Feedback','feedback')
+                ->sortable()
+                ->rules('required', 'max:255'),
 
-            Images::make('Image','color_images')
+            Images::make('Image','testimonial_images')
                 ->conversionOnIndexView('thumb')
-                ->conversionOnDetailView('full')
-                ->conversionOnForm('full')
+                ->conversionOnDetailView('thumb')
+                ->conversionOnForm('thumb')
                 ->required(),
         ];
     }

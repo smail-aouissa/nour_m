@@ -20,6 +20,8 @@ class Collection extends Resource
      */
     public static $model = \App\Models\Collection::class;
 
+    public static $group = "Objets";
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -34,6 +36,38 @@ class Collection extends Resource
      */
     public static $search = [
         'id', 'label',
+    ];
+
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return $query->limit(4);
+    }
+
+    public function authorizedToAdd(NovaRequest $request, $model)
+    {
+        return false;
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+    public static function label()
+    {
+        return 'Les collections';
+    }
+
+    public $resolution = [
+        '1' => ['width' => 359 , 'height' => 430],
+        '2' => ['width' => 359 , 'height' => 220],
+        '3' => ['width' => 359 , 'height' => 220],
+        '4' => ['width' => 750 , 'height' => 150],
     ];
 
     /**
@@ -53,12 +87,17 @@ class Collection extends Resource
                 ->rules('required', 'max:255'),
 
             Images::make('Images','collection_images')
-                ->conversionOnIndexView('thumb')
+                ->conversionOnIndexView('full')
                 ->conversionOnDetailView('full')
                 ->conversionOnForm('full')
                 ->showDimensions()
-                //->singleImageRules('dimensions:max_width=100')
-                ->required(),
+                ->singleImageRules('dimensions:width='.$this->resolution[$this->id ?? 1]['width'].
+                    ',height='.$this->resolution[$this->id ?? 1]['height'])
+                ->required()
+                ->help(
+                    'Résolution d\'images est: '. $this->resolution[$this->id ?? 1]['width'] .
+                    'px X '.$this->resolution[$this->id ?? 1]['height'].'px'
+                ),
 
             BelongsToMany::make('Produits', 'products', Product::class)
         ];

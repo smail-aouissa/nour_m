@@ -20,6 +20,8 @@ class TopPanel extends Resource
      */
     public static $model = \App\Models\TopPanel::class;
 
+    public static $group = "Objets";
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -35,6 +37,11 @@ class TopPanel extends Resource
     public static $search = [
         'id', 'text',
     ];
+
+    public static function label()
+    {
+        return "Panneaux";
+    }
 
     /**
      * Get the fields displayed by the resource.

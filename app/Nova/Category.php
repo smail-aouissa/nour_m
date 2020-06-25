@@ -19,6 +19,8 @@ class Category extends Resource
      */
     public static $model = \App\Models\Category::class;
 
+    public static $group = "Objets";
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -41,6 +43,11 @@ class Category extends Resource
             return $query;
 
         return $query->whereNull('category_id');
+    }
+
+    public static function label()
+    {
+        return "Les catégories";
     }
 
     /**

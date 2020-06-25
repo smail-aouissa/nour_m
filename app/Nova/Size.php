@@ -50,6 +50,11 @@ class Size extends Resource
         return false;
     }
 
+    public static function label()
+    {
+        return "Tailles";
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

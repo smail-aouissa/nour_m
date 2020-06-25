@@ -7,35 +7,30 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Collection extends Model implements HasMedia
+class Testimonial extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
     protected $guarded = [];
 
-    protected static function boot()
-    {
-        parent::boot();
-    }
+    protected $appends = ['photo'];
 
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('full')
+        $this->addMediaConversion('thumb')
+            ->height(80)
+            ->width(80)
             ->optimize();
     }
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('collection_images')
+        $this->addMediaCollection('testimonial_images')
             ->singleFile();
     }
 
-    public function products(){
-        return $this->belongsToMany(Product::class,'collection_product');
-    }
-
     public function getPhotoAttribute(){
-        $result = $this->getFirstMediaUrl('collection_images');
+        $result = $this->getFirstMediaUrl('testimonial_images','thumb');
         $this->unsetRelation('media');
         return $result;
     }
