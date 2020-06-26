@@ -16,18 +16,14 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        try {
-            return response()->json([
-                'topPanelItems' => TopPanel::select('text','link')
-                    ->get(),
-                'categories' => Category::select('label','id')
-                    ->onlyParent()
-                    ->with('children')
-                    ->get(),
-            ], 200);
-        }catch(\Exception $e){
-            return response()->noContent(500);
-        }
+        return response()->json([
+            'topPanelItems' => TopPanel::select('text','link')
+                ->get(),
+            'categories' => Category::select('label','id')
+                ->onlyParent()
+                ->with('children')
+                ->get(),
+        ], 200);
     }
 
     public function index(){
