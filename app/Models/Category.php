@@ -37,24 +37,20 @@ class Category extends Model implements HasMedia
             ->height(720);
     }
 
-    public function scopeOnlyParent(Builder $query)
-    {
-        $query->whereNull('category_id');
-    }
-
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
             ->singleFile();
     }
 
+    public function scopeOnlyParent(Builder $query)
+    {
+        $query->whereNull('category_id');
+    }
+
     public function products(){
         return $this->hasMany(Product::class);
     }
-
-    /*public function allProducts(){
-        return $this->hasMany(Product::class);
-    }*/
 
     public function children(){
         return $this->hasMany(Category::class);

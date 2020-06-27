@@ -52,7 +52,7 @@ class Category extends Resource
 
     public static function label()
     {
-        return "Les catégories";
+        return "Catégories";
     }
 
     /**

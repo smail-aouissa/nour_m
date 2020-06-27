@@ -60,7 +60,7 @@ class Collection extends Resource
 
     public static function label()
     {
-        return 'Les collections';
+        return 'Collections';
     }
 
     public $resolution = [

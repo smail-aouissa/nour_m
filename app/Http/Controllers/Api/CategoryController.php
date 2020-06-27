@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Product;
 use App\Models\Size;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -29,13 +30,14 @@ class CategoryController extends Controller
     public function show(Request $request, $id){
         $filters = $request->all();
         $category = Category::query()->findOrFail($id);
+        $categories = $category->children()->get('id')->pluck('id');
 
         $price = array_key_exists('price',$filters) && count($filters['price']) > 0;
         $colors = array_key_exists('colors',$filters) && count($filters['colors']) > 0;
         $sizes = array_key_exists('sizes',$filters) && count($filters['sizes']) > 0;
 
         return response()->json([
-            'products' => $category->products()
+            'products' => Product::whereIn('category_id', $categories->add($category->id) )
                 ->when( $price , function (Builder $q) use($filters) {
                     $q->where([
                         ['price', '>=' , $filters['price']['min']],
