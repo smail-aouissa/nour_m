@@ -78,6 +78,16 @@ class Product extends Model implements HasMedia
                 ];
             }) : [];
         $this->unsetRelation('media');
+
+        $this->colors->each(function ( $color )use ($photos){
+            if($url = $color->photo)
+                $photos->push([
+                    'thumb' => null,
+                    'full' => $url,
+                ]);
+
+        });
+
         return $photos;
     }
 
