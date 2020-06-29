@@ -8,6 +8,11 @@ class Order extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'validated_at' => 'datetime'
+    ];
+
     public function products(){
         return $this->belongsToMany(Product::class)
             ->withPivot('quantity','price','attributes','product_id')

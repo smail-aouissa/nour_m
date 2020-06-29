@@ -44,6 +44,6 @@ class InvalidateOrder extends Action
 
     public function name()
     {
-        return 'Valider la commande';
+        return 'Invalider la commande';
     }
 }
