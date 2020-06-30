@@ -123,6 +123,22 @@ class Product extends Resource
                             return count($attributes) > 0 ? $result : 'Non défini';
                         })->asHtml(),
                     ];
+                })->onlyOnIndex(),
+            BelongsToMany::make('Commandes','orders',ExportOrder::class)
+                ->fields(function (){
+                    return [
+                        Text::make('Prix de vente','price'),
+                        Text::make('quantity','quantity'),
+                        Text::make('Attributes',function ($model){
+                            $attributes = json_decode($model->attributes,true) ?? [];
+                            $result = '';
+                            if(array_key_exists('color',$attributes))
+                                $result .= "<div class='flex items-center mt-1'>Couleur: <div class='mx-2' style='background-color: ".$attributes['color']."; border-radius: 30px;width: 15px;height: 15px'></div></div>";
+                            if(array_key_exists('size', $attributes))
+                                $result .= "<div>Taille: <span>".$attributes['size']."</span></div>";
+                            return count($attributes) > 0 ? $result : 'Non défini';
+                        })->asHtml(),
+                    ];
                 })->onlyOnIndex()
         ];
     }

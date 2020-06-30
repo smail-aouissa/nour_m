@@ -115,6 +115,7 @@ class ExportOrder extends Resource
             DateTime::make('Crée le','created_at')->format('DD-MMM-YYYY HH:mm'),
 
             BelongsToMany::make('Produits','products',Product::class)
+            
         ];
     }
 
