@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamp('validated_at')->nullable();
+            $table->timestamp('exported_at')->nullable();
             $table->string('name');
             $table->string('phone');
             $table->string('address');

@@ -10,7 +10,8 @@ class Order extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
-        'validated_at' => 'datetime'
+        'validated_at' => 'datetime',
+        'exported_at' => 'datetime'
     ];
 
     public function products(){

@@ -10,6 +10,7 @@ class ExportOrders extends DownloadExcel implements WithMapping
 {
     public function __construct()
     {
+
         $this->withFilename('commande-' . time() . '.xlsx');
     }
 
@@ -20,6 +21,9 @@ class ExportOrders extends DownloadExcel implements WithMapping
      */
     public function map($order): array
     {
+
+        $order->exported_at = now();
+        $order->save();
         return $order->products->map(function ($p) use ($order){
             $attr = '';
             if($p->color)
@@ -55,6 +59,7 @@ class ExportOrders extends DownloadExcel implements WithMapping
 
     public function onSuccess(callable $callback)
     {
+
         return Action::message('Le fichier Excel a été exporté avec succes.');
     }
 
