@@ -21,32 +21,36 @@ class ExportOrders extends DownloadExcel implements WithMapping
      */
     public function map($order): array
     {
-
         $order->exported_at = now();
         $order->save();
-        return $order->products->map(function ($p) use ($order){
-            $attr = '';
-            if($p->color)
-                $attr .= 'Couleur: '. $p->color->label .', ';
-            if($p->size)
-                $attr .= 'Taille: '. $p->size->label;
 
-            return [
-                $order->email,
-                $order->name,
-                optional($order->province)->code,
-                optional($order->province)->name,
-                optional($order->town)->name,
-                $order->address,
-                $order->phone,
-                '',
-                $p->id,
-                $order->id,
-                '',
-                $p->pivot->quantity,
-                $attr,
-            ];
-        })->toArray();
+        return [
+            $order->email,
+            $order->name,
+            optional($order->province)->code,
+            optional($order->province)->name,
+            optional($order->town)->name,
+            $order->address,
+            $order->phone,
+            '',
+            join(', ', $order->products->pluck('id')->toArray() ),
+            $order->id,
+            '',
+
+            'Quantités: ' . join(', ', $order->products->map(function ($p){
+                return $p->pivot->quantity ;
+            })->toArray()),
+
+            join(",\n ", $order->products->map(function ($p){
+                $attributes = $p->pivot->attributes ? collect(json_decode($p->pivot->attributes)) : collect([]);
+                $attr = '';
+                if($attributes->has('color'))
+                    $attr .= 'Couleur: '. $attributes->get('color') .', ';
+                if($attributes->has('size'))
+                    $attr .= 'Taille: '. $attributes->get('size');
+                return $attr;
+            })->toArray() ),
+        ];
     }
 
     public function headings(): array
