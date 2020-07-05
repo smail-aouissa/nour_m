@@ -42,8 +42,10 @@ class HomeController extends Controller
 
             'latestProducts' => Product::whereStatus(true)
                 ->with('category:label,id','colors','sizes')
+                ->where('show_at_home','<>',0)
                 ->limit(8)
                 ->withRating()
+                ->orderBy('show_at_home','asc')
                 ->get(['products.promo_price AS offerPrice', 'products.*'])
                 ->each
                 ->setAppends(['photos']),
