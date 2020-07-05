@@ -80,9 +80,10 @@ class Product extends Resource
             Text::make('Prix','price')
                 ->default(function () { return 1.00; })
                 ->sortable()
-                ->hideFromIndex(function ($request){
-                    return $request->request->get('relationshipType');
-                })
+                ->hideFromIndex()
+                // ->hideFromIndex(function ($request){
+                //     return $request->request->get('relationshipType');
+                // })
                 ->rules('required', 'numeric','min:0'),
 
             Text::make('Prix promo','promo_price')
