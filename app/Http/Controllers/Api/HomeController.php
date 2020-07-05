@@ -45,7 +45,7 @@ class HomeController extends Controller
                 ->where('sort_new_products','<>',0)
                 ->limit(8)
                 ->withRating()
-                ->orderBy('show_at_home','asc')
+                ->orderBy('sort_new_products','asc')
                 ->get(['products.promo_price AS offerPrice', 'products.*'])
                 ->each
                 ->setAppends(['photos']),
