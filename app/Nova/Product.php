@@ -45,7 +45,7 @@ class Product extends Resource
 
     protected function authorizedToUpdateForSerialization(NovaRequest $request)
     {
-        return false;
+        return true;
     }
     public static function label()
     {
@@ -68,6 +68,9 @@ class Product extends Resource
                 }),
 
             Text::make('Label')
+                ->sortable()
+                ->rules('required', 'max:255'),
+            Text::make('Tri Page Accueil','show_at_home')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
