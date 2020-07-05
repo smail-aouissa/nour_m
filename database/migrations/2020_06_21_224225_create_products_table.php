@@ -17,7 +17,8 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('label');
-            $table->integer('show_at_home')->default(0)->nullable();
+            $table->integer('sort_last_trend')->default(0)->nullable();
+            $table->integer('sort_new_products')->default(0)->nullable();
             $table->text('description')->nullable();
             $table->unsignedDecimal('price')->default(1);
             $table->unsignedInteger('promo_price')->nullable();

@@ -42,7 +42,7 @@ class HomeController extends Controller
 
             'latestProducts' => Product::whereStatus(true)
                 ->with('category:label,id','colors','sizes')
-                ->where('show_at_home','<>',0)
+                ->where('sort_new_products','<>',0)
                 ->limit(8)
                 ->withRating()
                 ->orderBy('show_at_home','asc')
@@ -52,9 +52,10 @@ class HomeController extends Controller
 
             'bestSellersProducts' => Product::whereStatus(true)
                 ->with('category:label,id','colors','sizes')
+                ->where('sort_last_trend','<>',0)
                 ->limit(4)
                 ->withRating()
-                ->orderBy('rating','desc')
+                ->orderBy('sort_last_trend','asc')
                 ->get(['products.promo_price AS offerPrice', 'products.*'])
                 ->each
                 ->setAppends(['photos']),

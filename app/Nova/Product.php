@@ -70,7 +70,10 @@ class Product extends Resource
             Text::make('Label')
                 ->sortable()
                 ->rules('required', 'max:255'),
-            Text::make('Tri Page Accueil','show_at_home')
+            Text::make('Tri derniere produit','sort_new_products')
+                ->sortable()
+                ->rules('required', 'max:255'),
+            Text::make('Tri derniere tendance','sort_last_trend')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
