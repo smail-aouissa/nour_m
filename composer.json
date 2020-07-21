@@ -15,6 +15,7 @@
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
+        "laouis/attributes-field": "*",
         "laravel/framework": "^7.0",
         "laravel/nova": "*",
         "laravel/tinker": "^2.0",
@@ -22,7 +23,8 @@
         "maatwebsite/laravel-nova-excel": "^1.2",
         "reinink/advanced-eloquent": "^0.2.0",
         "spatie/laravel-medialibrary": "^8.3.0",
-        "timothyasp/nova-color-field": "^1.0"
+        "timothyasp/nova-color-field": "^1.0",
+        "wehaa/liveupdate": "^0.1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.4",
@@ -36,6 +38,18 @@
         {
             "type": "path",
             "url": "./nova"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/AttributesField"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/AttributesField"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/AttributesField"
         }
     ],
     "config": {
@@ -55,6 +69,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/functions.php"
         ]
     },
     "autoload-dev": {

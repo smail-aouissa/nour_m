@@ -7,27 +7,25 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Wehaa\Liveupdate\Liveupdate;
 
-class Color extends Resource
+class Variation extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Color::class;
+    public static $model = \App\Models\Variation::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'label';
-
-    public static $group = "Attributs";
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -35,12 +33,12 @@ class Color extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'label','code',
+        'id',
     ];
 
     public static function availableForNavigation(Request $request)
     {
-        return true;
+        return false;
     }
 
     public function authorizedToView(Request $request)
@@ -50,7 +48,22 @@ class Color extends Resource
 
     public static function label()
     {
-        return "Couleurs";
+        return "Attributs";
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public static function searchable()
+    {
+        return false;
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
     }
 
     /**
@@ -64,13 +77,26 @@ class Color extends Resource
         return [
             ID::make()->sortable(),
 
-            Text::make('Label')
+            Text::make('Couleur',function (){
+                    return '<div class="flex">
+                                <div class="mr-2">'. optional($this->color)->label .'</div>
+                                <div style="background-color: '. optional($this->color)->code.'; border-radius: 15px;width: 20px;height: 20px"></div>
+                            </div>';
+                })
+                ->asHtml()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            \Timothyasp\Color\Color::make('Les couleurs de produit ','code')
-                ->compact()
-                ->rules('required'),
+            Text::make('Taille',function (){
+                    return optional($this->size)->label;
+                })
+                ->sortable()
+                ->rules('required', 'max:255'),
+
+            Liveupdate::make('Quantité','quantity')
+                ->sortable()
+                ->rules('required', 'numeric','min:0'),
+
         ];
     }
 

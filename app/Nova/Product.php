@@ -4,13 +4,12 @@ namespace App\Nova;
 
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
+use Laouis\AttributesField\AttributesField;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\Trix;
@@ -47,6 +46,7 @@ class Product extends Resource
     {
         return true;
     }
+
     public static function label()
     {
         return "Produits";
@@ -73,6 +73,7 @@ class Product extends Resource
             Text::make('Tri derniere produit','sort_new_products')
                 ->sortable()
                 ->rules('required', 'max:255'),
+
             Text::make('Tri derniere tendance','sort_last_trend')
                 ->sortable()
                 ->rules('required', 'max:255'),
@@ -97,7 +98,16 @@ class Product extends Resource
                 ->rules('nullable', 'string'),
 
             Trix::make('Déscription','description')
-                ->onlyOnForms(),
+                ->onlyOnForms()
+                ->rules('required'),
+
+            AttributesField::make('Attributs','attr')
+                ->withMeta([
+                    'colors' => \App\Models\Color::all(),
+                    'sizes' => \App\Models\Size::all(),
+                    'selectedColors' => $this->colors,
+                    'selectedSizes' => $this->sizes,
+                ]),
 
             Boolean::make('Statut','status')->default(function (){
                     return true;
@@ -111,9 +121,9 @@ class Product extends Resource
                 ->conversionOnForm('full')
                 ->hideFromIndex(),
 
-            HasMany::make('Couleurs','colors',Color::class),
+            HasMany::make('Couleurs','colors',ColorProduct::class),
 
-            HasMany::make('Tailles','sizes',Size::class),
+            //HasMany::make('Tailles','sizes',Size::class),
 
             BelongsToMany::make('Commandes','orders',Order::class)
                 ->fields(function (){
@@ -131,6 +141,7 @@ class Product extends Resource
                         })->asHtml(),
                     ];
                 })->onlyOnIndex(),
+
             BelongsToMany::make('Commandes','orders',ExportOrder::class)
                 ->fields(function (){
                     return [
@@ -146,7 +157,9 @@ class Product extends Resource
                             return count($attributes) > 0 ? $result : 'Non défini';
                         })->asHtml(),
                     ];
-                })->onlyOnIndex()
+                })->onlyOnIndex(),
+
+            HasMany::make('Attributes','variations',Variation::class),
         ];
     }
 

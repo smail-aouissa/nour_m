@@ -19,7 +19,61 @@ class Product extends Model implements HasMedia
         'rating' => 'integer',
     ];
 
+    public $attr;
+
     protected $appends = ['photos'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function (Product $model){
+            $attributes = json_decode($model->attr, true);
+
+            if($model->colors()->count() > 0){
+                $model_colors = $model->colors;
+                $deleted_colors = $model_colors->whereNotIn('label',collect($attributes['colors'])->pluck('label'))->pluck('id');
+                $model->colors()->whereIn('id',$deleted_colors)->delete();
+            }
+
+            $colors = collect($attributes['colors'])->map(function ($color) use ($model) {
+                return $model->colors()->updateOrCreate([
+                    'id' => $color['id']
+                ], [
+                    "product_id" => $model->id,
+                    'label' => $color['label'],
+                    'code' => $color['code'],
+                ]);
+            });
+
+            if($model->sizes()->count() > 0){
+                $model_sizes = $model->sizes;
+                $deleted_sizes = $model_sizes->whereNotIn('label',collect($attributes['sizes'])->pluck('label'))->pluck('id');
+                $model->sizes()->whereIn('id',$deleted_sizes)->delete();
+            }
+
+            $sizes = collect($attributes['sizes'])->map(function ($size) use ($model) {
+                return $model->sizes()->updateOrCreate([
+                    'id' => $size['id']
+                ], [
+                    "product_id" => $model->id,
+                    'label' => $size['label'],
+                ]);
+            });
+
+            $variations = cartesian([ "color" => $colors->toArray() , 'size' => $sizes->toArray() ]);
+
+            foreach ($variations as $row){
+                $model->variations()
+                    ->firstOrCreate([
+                        'product_id' => $model->id,
+                        'color_product_id' => $row['color']['id'],
+                        'product_size_id' => $row['size']['id'],
+                    ]);
+            }
+
+        });
+    }
 
     public function registerMediaConversions(Media $media = null): void
     {
@@ -58,11 +112,15 @@ class Product extends Model implements HasMedia
     }
 
     public function colors(){
-        return $this->hasMany(Color::class);
+        return $this->hasMany(ColorProduct::class);
     }
 
     public function sizes(){
-        return $this->hasMany(Size::class);
+        return $this->hasMany(ProductSize::class);
+    }
+
+    public function variations(){
+        return $this->hasMany(Variation::class);
     }
 
     public function ratings(){

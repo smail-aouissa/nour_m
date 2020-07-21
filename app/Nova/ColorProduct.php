@@ -11,14 +11,14 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Color extends Resource
+class ColorProduct extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Color::class;
+    public static $model = \App\Models\ColorProduct::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -26,8 +26,6 @@ class Color extends Resource
      * @var string
      */
     public static $title = 'label';
-
-    public static $group = "Attributs";
 
     /**
      * The columns that should be searched.
@@ -40,7 +38,7 @@ class Color extends Resource
 
     public static function availableForNavigation(Request $request)
     {
-        return true;
+        return false;
     }
 
     public function authorizedToView(Request $request)
@@ -51,6 +49,26 @@ class Color extends Resource
     public static function label()
     {
         return "Couleurs";
+    }
+
+    public static function redirectAfterUpdate(NovaRequest $request, $resource)
+    {
+        return '/resources/products/'. $resource->product->id;
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
+    }
+
+    public static function authorizedToCreate(Request $request)
+    {
+        return false;
+    }
+
+    public static function searchable()
+    {
+        return false;
     }
 
     /**
@@ -68,9 +86,16 @@ class Color extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            \Timothyasp\Color\Color::make('Les couleurs de produit ','code')
+            \Timothyasp\Color\Color::make('Couleur','code')
                 ->compact()
+                ->onlyOnIndex()
                 ->rules('required'),
+
+            Images::make('Image','color_images')
+                ->conversionOnIndexView('thumb')
+                ->conversionOnDetailView('full')
+                ->conversionOnForm('full')
+                ->required(),
         ];
     }
 

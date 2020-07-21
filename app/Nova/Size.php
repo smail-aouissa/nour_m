@@ -26,6 +26,8 @@ class Size extends Resource
      */
     public static $title = 'label';
 
+    public static $group = "Attributs";
+
     /**
      * The columns that should be searched.
      *
@@ -37,12 +39,7 @@ class Size extends Resource
 
     public static function availableForNavigation(Request $request)
     {
-        return false;
-    }
-
-    public static function redirectAfterCreate(NovaRequest $request, $resource)
-    {
-        return '/resources/products/'. $resource->product->id;
+        return true;
     }
 
     public function authorizedToView(Request $request)
@@ -66,16 +63,10 @@ class Size extends Resource
         return [
             ID::make()->sortable(),
 
-            BelongsTo::make('Produit','product',Product::class)
-                ->exceptOnForms(),
-
             Text::make('Label')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make('Quantité','quantity')
-                ->sortable()
-                ->rules('required', 'max:20'),
         ];
     }
 

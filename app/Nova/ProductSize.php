@@ -11,14 +11,14 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Color extends Resource
+class ProductSize extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = \App\Models\Color::class;
+    public static $model = \App\Models\ProductSize::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -27,20 +27,18 @@ class Color extends Resource
      */
     public static $title = 'label';
 
-    public static $group = "Attributs";
-
     /**
      * The columns that should be searched.
      *
      * @var array
      */
     public static $search = [
-        'id', 'label','code',
+        'id', 'label',
     ];
 
     public static function availableForNavigation(Request $request)
     {
-        return true;
+        return false;
     }
 
     public function authorizedToView(Request $request)
@@ -50,7 +48,7 @@ class Color extends Resource
 
     public static function label()
     {
-        return "Couleurs";
+        return "Tailles";
     }
 
     /**
@@ -64,13 +62,17 @@ class Color extends Resource
         return [
             ID::make()->sortable(),
 
+            BelongsTo::make('Produit','product',Product::class)
+                ->exceptOnForms(),
+
             Text::make('Label')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            \Timothyasp\Color\Color::make('Les couleurs de produit ','code')
-                ->compact()
-                ->rules('required'),
+            Number::make('Quantité','quantity')
+                ->required()
+                ->rules('required','numeric','min:0'),
+
         ];
     }
 
