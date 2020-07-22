@@ -2,6 +2,7 @@
 
 namespace App\Nova\Actions;
 
+use App\Models\Variation;
 use Laravel\Nova\Actions\Action;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
@@ -21,8 +22,20 @@ class ExportOrders extends DownloadExcel implements WithMapping
      */
     public function map($order): array
     {
+        $first_export = false;
+        if( !$order->exported_at  ) $first_export = true;
+
         $order->exported_at = now();
         $order->save();
+
+        if($first_export)
+            $order->products->each(function ($p){
+                if(intval($p->pivot->variation_id)){
+                    Variation::where('id', $p->pivot->variation_id)->update([
+                        'quantity'=> \DB::raw('quantity - ' . $p->pivot->quantity),
+                    ]);
+                }
+            });
 
         return [
             $order->email,

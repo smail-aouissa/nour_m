@@ -36,9 +36,10 @@ class OrderController extends Controller
             if($item['size']) $attributes['size'] = $item['size']['label'];
             return [
                 'product_id' => $item['id'],
+                'variation_id' => $item['variation']['id'],
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
-                'attributes' => json_encode($attributes)
+                'attributes' => json_encode($attributes),
             ];
         });
 
