@@ -2,14 +2,9 @@
 
 namespace App\Nova;
 
-use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Color extends Resource
 {
@@ -27,7 +22,7 @@ class Color extends Resource
      */
     public static $title = 'label';
 
-    public static $group = "Attributs";
+    public static $group = "Options";
 
     /**
      * The columns that should be searched.

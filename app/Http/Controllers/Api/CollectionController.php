@@ -17,7 +17,7 @@ class CollectionController extends Controller
         // TODO colors of collection
         return response()->json([
             'sections' => Collection::all(['id','label']),
-            'colors' => Color::groupBy(['code'])->get(['id','code','label']),
+            'colors' => Color::groupBy(['code','label'])->get(['id','code','label']),
             'sizes' => Size::groupBy(['label'])->get(['id','label']),
         ],200);
     }

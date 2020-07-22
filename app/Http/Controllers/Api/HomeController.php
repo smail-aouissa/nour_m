@@ -27,6 +27,7 @@ class HomeController extends Controller
     }
 
     public function index(){
+
         return response()->json([
             'sliders' => Slider::whereStatus(true)
                 ->select('id','link','title','content')
@@ -41,24 +42,22 @@ class HomeController extends Controller
                 ->append('photo'),
 
             'latestProducts' => Product::whereStatus(true)
-                ->with('category:label,id','colors','sizes')
+                ->with('category:label,id','colors','sizes','variations')
                 ->where('sort_new_products','<>',0)
                 ->limit(8)
                 ->withRating()
                 ->orderBy('sort_new_products','asc')
                 ->get(['products.promo_price AS offerPrice', 'products.*'])
-                ->each
-                ->setAppends(['photos']),
+                ->each->setAppends(['photos']),
 
             'bestSellersProducts' => Product::whereStatus(true)
-                ->with('category:label,id','colors','sizes')
+                ->with('category:label,id','colors','sizes','variations')
                 ->where('sort_last_trend','<>',0)
                 ->limit(4)
                 ->withRating()
                 ->orderBy('sort_last_trend','asc')
                 ->get(['products.promo_price AS offerPrice', 'products.*'])
-                ->each
-                ->setAppends(['photos']),
+                ->each->setAppends(['photos']),
 
             'collections' => Collection::select('label','id')
                 ->limit(4)

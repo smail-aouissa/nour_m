@@ -12,14 +12,14 @@ class ProductController extends Controller
         return response()->json([
             'product' => Product::query()
                 ->select(['products.promo_price AS offerPrice', 'products.*'])
-                ->with('category:label,id','colors','sizes')
+                ->with('category:label,id','colors','sizes','variations')
                 ->withRating()
                 ->findOrFail($id),
 
             'relatedProducts' => Product::findOrFail($id)
                 ->category
                 ->products()
-                ->with('category:label,id','colors','sizes')
+                ->with('category:label,id','colors','sizes','variations')
                 ->withRating()
                 ->limit(4)
                 ->get()

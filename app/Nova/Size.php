@@ -26,7 +26,7 @@ class Size extends Resource
      */
     public static $title = 'label';
 
-    public static $group = "Attributs";
+    public static $group = "Options";
 
     /**
      * The columns that should be searched.

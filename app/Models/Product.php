@@ -134,7 +134,7 @@ class Product extends Model implements HasMedia
                     'thumb' => $item->getFullUrl('thumb'),
                     'full' => $item->getFullUrl('full'),
                 ];
-            }) : [];
+            }) : collect([]);
         $this->unsetRelation('media');
 
         $this->colors->each(function ( $color )use ($photos){
