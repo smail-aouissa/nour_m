@@ -38,7 +38,9 @@ class Product extends Model implements HasMedia
 
             $colors = collect($attributes['colors'])->map(function ($color) use ($model) {
                 return $model->colors()->updateOrCreate([
-                    'id' => $color['id']
+                    'label' => $color['label'],
+                    "product_id" => $model->id,
+                    'code' => $color['code'],
                 ], [
                     "product_id" => $model->id,
                     'label' => $color['label'],
@@ -54,7 +56,8 @@ class Product extends Model implements HasMedia
 
             $sizes = collect($attributes['sizes'])->map(function ($size) use ($model) {
                 return $model->sizes()->updateOrCreate([
-                    'id' => $size['id']
+                    "product_id" => $model->id,
+                    'label' => $size['label'],
                 ], [
                     "product_id" => $model->id,
                     'label' => $size['label'],

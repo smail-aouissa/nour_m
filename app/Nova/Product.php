@@ -107,7 +107,7 @@ class Product extends Resource
                     'sizes' => \App\Models\Size::all(),
                     'selectedColors' => $this->colors,
                     'selectedSizes' => $this->sizes,
-                ]),
+                ])->hideFromIndex(),
 
             Boolean::make('Statut','status')->default(function (){
                     return true;
