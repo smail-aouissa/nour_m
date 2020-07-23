@@ -94,10 +94,12 @@ class Product extends Resource
                 ->rules('nullable', 'numeric','min:0'),
 
             Textarea::make('Déscription','description')
+                ->nullable()
                 ->onlyOnDetail()
                 ->rules('nullable', 'string'),
 
             Trix::make('Déscription','description')
+                ->nullable()
                 ->onlyOnForms()
                 ->rules('required'),
 
