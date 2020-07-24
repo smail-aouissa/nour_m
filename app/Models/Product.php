@@ -36,6 +36,17 @@ class Product extends Model implements HasMedia
                 $model->colors()->whereIn('id',$deleted_colors)->delete();
             }
 
+            if($model->sizes()->count() > 0){
+                $model_sizes = $model->sizes;
+                $deleted_sizes = $model_sizes->whereNotIn('label',collect($attributes['sizes'])->pluck('label'))->pluck('id');
+                $model->sizes()->whereIn('id',$deleted_sizes)->delete();
+            }
+
+            if( count($attributes['colors']) === 0 && count($attributes['sizes']) === 0 ){
+                $model->variations()->create([]);
+                return;
+            }
+
             $colors = collect($attributes['colors'])->map(function ($color) use ($model) {
                 return $model->colors()->updateOrCreate([
                     'label' => $color['label'],
@@ -47,12 +58,6 @@ class Product extends Model implements HasMedia
                     'code' => $color['code'],
                 ]);
             });
-
-            if($model->sizes()->count() > 0){
-                $model_sizes = $model->sizes;
-                $deleted_sizes = $model_sizes->whereNotIn('label',collect($attributes['sizes'])->pluck('label'))->pluck('id');
-                $model->sizes()->whereIn('id',$deleted_sizes)->delete();
-            }
 
             $sizes = collect($attributes['sizes'])->map(function ($size) use ($model) {
                 return $model->sizes()->updateOrCreate([

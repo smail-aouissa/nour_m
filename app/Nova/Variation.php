@@ -78,17 +78,23 @@ class Variation extends Resource
             ID::make()->sortable(),
 
             Text::make('Couleur',function (){
-                    return '<div class="flex">
-                                <div class="mr-2">'. optional($this->color)->label .'</div>
-                                <div style="background-color: '. optional($this->color)->code.'; border-radius: 15px;width: 20px;height: 20px"></div>
-                            </div>';
+                    if (!$this->color)
+                        return 'Pas de couleur';
+                    else
+                        return '<div class="flex">
+                                    <div class="mr-2">'. optional($this->color)->label .'</div>
+                                    <div style="background-color: '. optional($this->color)->code.'; border-radius: 15px;width: 20px;height: 20px"></div>
+                                </div>';
                 })
                 ->asHtml()
                 ->sortable()
                 ->rules('required', 'max:255'),
 
             Text::make('Taille',function (){
-                    return optional($this->size)->label;
+                    if (!$this->size)
+                        return 'Pas de taille';
+                    else
+                        return optional($this->size)->label;
                 })
                 ->sortable()
                 ->rules('required', 'max:255'),

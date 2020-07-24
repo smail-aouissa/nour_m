@@ -32,8 +32,8 @@ class OrderController extends Controller
 
         $products = collect($request->items)->map(function ($item){
             $attributes = [];
-            if($item['color']) $attributes['color'] = $item['color']['code'];
-            if($item['size']) $attributes['size'] = $item['size']['label'];
+            if($item['color']) $attributes['color'] = $item['color'] ? $item['color']['code'] : null;
+            if($item['size']) $attributes['size'] = $item['size'] ? $item['size']['label'] : null;
             return [
                 'product_id' => $item['id'],
                 'variation_id' => $item['variation']['id'],
