@@ -75,8 +75,8 @@ class Product extends Model implements HasMedia
                 $model->variations()
                     ->firstOrCreate([
                         'product_id' => $model->id,
-                        'color_product_id' => $row['color']['id'],
-                        'product_size_id' => $row['size']['id'],
+                        'color_product_id' => array_key_exists('color',$row) ? $row['color']['id'] : null,
+                        'product_size_id' => array_key_exists('size',$row) ? $row['size']['id'] : null,
                     ]);
             }
 

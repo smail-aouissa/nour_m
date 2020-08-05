@@ -16,8 +16,8 @@ class CreateVariationsTable extends Migration
         Schema::create('variations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('color_product_id');
-            $table->unsignedBigInteger('product_size_id');
+            $table->unsignedBigInteger('color_product_id')->nullable();
+            $table->unsignedBigInteger('product_size_id')->nullable();
             $table->unsignedSmallInteger('quantity')->default(0);
             $table->timestamps();
 
