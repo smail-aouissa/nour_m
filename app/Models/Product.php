@@ -43,7 +43,7 @@ class Product extends Model implements HasMedia
             }
 
             if( count($attributes['colors']) === 0 && count($attributes['sizes']) === 0 ){
-                $model->variations()->create([]);
+                $model->variations()->delete();
                 return;
             }
 
@@ -71,14 +71,20 @@ class Product extends Model implements HasMedia
 
             $variations = cartesian([ "color" => $colors->toArray() , 'size' => $sizes->toArray() ]);
 
+            $to_keep = collect([]);
+
             foreach ($variations as $row){
-                $model->variations()
+                 $keep = $model->variations()
                     ->firstOrCreate([
                         'product_id' => $model->id,
                         'color_product_id' => array_key_exists('color',$row) ? $row['color']['id'] : null,
                         'product_size_id' => array_key_exists('size',$row) ? $row['size']['id'] : null,
                     ]);
+
+                $to_keep->add($keep);
             }
+
+            $model->variations()->whereNotIn('id',$to_keep->pluck('id')->toArray())->delete();
 
         });
     }
