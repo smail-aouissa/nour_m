@@ -34,8 +34,10 @@ class HomeController extends Controller
                 ->get(),
 
             'categories' => Category::select('label','id')
-                ->onlyParent()
-                ->with(['children'])
+                // ->onlyParent()
+                ->where('tri','>',0)
+                // ->with(['children'])
+                ->orderBy('tri','asc')
                 ->limit(3)
                 ->get()
                 ->map

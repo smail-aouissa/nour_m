@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Category extends Resource
@@ -72,6 +73,10 @@ class Category extends Resource
             Text::make('Label')
                 ->sortable()
                 ->rules('required', 'max:255'),
+            Number::make('tri')
+                ->sortable()
+                ->min(0)
+                ->default(0),
 
             Images::make('Images')
                 ->conversionOnIndexView('thumb')
