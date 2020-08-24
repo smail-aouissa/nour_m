@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*.noor-m.com'],
+    'allowed_origins' => ['https://noor-m.com/','https://test.noor-m.com','*.noor-m.com'],
 
     'allowed_origins_patterns' => [],
 
