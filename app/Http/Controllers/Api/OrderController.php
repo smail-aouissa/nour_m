@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Variation;
 use App\Models\Order;
 use App\Models\Size;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,10 +42,12 @@ class OrderController extends Controller
                 'quantity' => $item['quantity'],
                 'attributes' => json_encode($attributes),
             ];
+            $variation=Variation::find($item['variation']['id']);
+            $variation->quantity=$variation->quantity-$item['quantity'];
+            $variation->save();
         });
 
         $order->products()->sync( $products );
-
         DB::commit();
 
         return response()->noContent(200);
