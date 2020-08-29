@@ -35,16 +35,16 @@ class OrderController extends Controller
             $attributes = [];
             if($item['color']) $attributes['color'] = $item['color'] ? $item['color']['code'] : null;
             if($item['size']) $attributes['size'] = $item['size'] ? $item['size']['label'] : null;
+            $variation=Variation::find($item['variation']['id']);
+            $variation->quantity=$variation->quantity-$item['quantity'];
+            $variation->save();
             return [
                 'product_id' => $item['id'],
-                'variation_id' => $item['variation']['id'],
+                'variation_id' => $item['variation'] ? $item['variation']['id'] : null,
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
                 'attributes' => json_encode($attributes),
             ];
-            $variation=Variation::find($item['variation']['id']);
-            $variation->quantity=$variation->quantity-$item['quantity'];
-            $variation->save();
         });
 
         $order->products()->sync( $products );
