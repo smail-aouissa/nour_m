@@ -100,8 +100,7 @@ class Product extends Resource
 
             Trix::make('Déscription','description')
                 ->nullable()
-                ->onlyOnForms()
-                ->rules('required'),
+                ->onlyOnForms(),
 
             AttributesField::make('Attributs','attr')
                 ->withMeta([
